@@ -10,31 +10,76 @@ This repository contains a collection of Jupyter notebooks demonstrating core ma
 ---
 
 ## Repository Structure
+
 ```
 CMOR438-Spring-2026/
-├── mlpackage/
+├── mlpackage/                          # Custom ML package (from scratch)
 │   ├── supervised_learning/
-│   │   ├── knn.py               # K-Nearest Neighbors classifier
-│   │   └── linear_regression.py # Linear Regression via Normal Equation
-│   ├── tests/
-│   │   ├── test_knn.py
-│   │   └── test_linear_regression.py
-│   └── init.py
+│   │   ├── knn.py                      # K-Nearest Neighbors classifier
+│   │   └── linear_regression.py        # Linear Regression via Normal Equation
+│   └── tests/
+│       ├── test_knn.py
+│       └── test_linear_regression.py
 ├── notebooks/
-│   └── mlpackage_demo.ipynb               # Demo notebook for mlpackage
+│   ├── mlpackage_demo.ipynb            # Package demo: KNN + Linear Regression on Iris
+│   ├── Supervised_Learning/
+│   │   ├── knn.ipynb
+│   │   ├── linear_regression.ipynb
+│   │   ├── logistic_regression.ipynb
+│   │   ├── decision_trees.ipynb
+│   │   ├── random_forests.ipynb
+│   │   ├── svm.ipynb
+│   │   ├── naive_bayes.ipynb
+│   │   └── neural_networks.ipynb
+│   ├── Unsupervised_Learning/
+│   │   ├── kmeans.ipynb
+│   │   ├── pca.ipynb
+│   │   └── hierarchical_clustering.ipynb
 ├── pytest.ini
 ├── requirements.txt
 └── README.md
 ```
+
+---
+
+## Jupyter Notebooks
+
+All notebooks use preloaded sklearn datasets and include data exploration, preprocessing, modeling, evaluation, and visualizations.
+
+### ML Package Demo
+
+| Notebook | Algorithms | Dataset |
+|----------|-----------|---------|
+| `mlpackage_demo.ipynb` | KNN, Linear Regression (from `mlpackage`) | Iris |
+
+### Supervised Learning
+
+| Notebook | Algorithm | Dataset | Key Topics |
+|----------|-----------|---------|------------|
+| `knn.ipynb` | K-Nearest Neighbors | Iris | Euclidean distance, K tuning, decision boundaries, feature scaling |
+| `linear_regression.ipynb` | Linear Regression | Diabetes | Normal Equation, residual analysis, Ridge, Lasso coefficient paths |
+| `logistic_regression.ipynb` | Logistic Regression | Breast Cancer | Sigmoid, gradient descent, log loss, ROC curve |
+| `decision_trees.ipynb` | Decision Trees (CART) | Iris | Gini impurity, tree depth, feature importance, decision boundary |
+| `random_forests.ipynb` | Random Forests, Gradient Boosting | Wine | Bagging, feature randomness, ensemble comparison |
+| `svm.ipynb` | Support Vector Machines | Iris | Margin maximization, kernels, GridSearchCV |
+| `naive_bayes.ipynb` | Gaussian Naïve Bayes | Digits | Bayes' theorem, class-conditional means, NB variants |
+| `neural_networks.ipynb` | MLP (feed-forward) | Digits | Backpropagation, ReLU, SGD, Adam, L2 regularization |
+
+### Unsupervised Learning
+
+| Notebook | Algorithm | Dataset | Key Topics |
+|----------|-----------|---------|------------|
+| `kmeans.ipynb` | K-Means | Synthetic blobs, Iris | Lloyd's algorithm, K-Means++, elbow method, silhouette score |
+| `pca.ipynb` | PCA | Digits | Eigendecomposition, explained variance, image reconstruction |
+| `hierarchical_clustering.ipynb` | Agglomerative Clustering | Iris | Dendrograms, linkage methods, choosing K |
+
 ---
 
 ## ML Package
 
-The `mlpackage` library provides from-scratch implementations of supervised learning algorithms. All models are implemented using only `numpy` and `pandas` — no scikit-learn models are used under the hood.
+The `mlpackage` library provides from-scratch implementations of two supervised learning algorithms using only `numpy` and `pandas`.
 
-### Algorithms
-
-#### K-Nearest Neighbors (`mlpackage.supervised_learning.knn`)
+### K-Nearest Neighbors (`mlpackage.supervised_learning.knn`)
 
 A lazy classification algorithm that predicts a label by finding the K closest training points and taking a majority vote.
 
@@ -44,9 +89,11 @@ A lazy classification algorithm that predicts a label by finding the K closest t
 - `confusion_matrix(X, y)` — returns a DataFrame confusion matrix
 - `draw_decision_boundary(X, y)` — plots decision boundary for 2D data
 
-#### Linear Regression (`mlpackage.supervised_learning.linear_regression`)
+### Linear Regression (`mlpackage.supervised_learning.linear_regression`)
 
 A regression algorithm that fits a line to data using the Normal Equation (closed-form solution).
+
+$$\theta = (X^\top X)^+ X^\top y$$
 
 - `fit(X, y)` — computes optimal parameters using the pseudoinverse
 - `predict(X)` — returns predicted continuous values
@@ -67,6 +114,7 @@ pip install -r requirements.txt
 ---
 
 ## Usage
+
 ```python
 from mlpackage.supervised_learning.knn import KNN
 from mlpackage.supervised_learning.linear_regression import LinearRegression
@@ -91,20 +139,7 @@ All algorithms are tested using `pytest`. To run the full test suite:
 pytest -v
 ```
 
-All 10 tests should pass covering accuracy, prediction shape, edge cases, and error handling.
-
----
-
-## Demo Notebook
-
-The notebook `notebooks/mlpackage_demo.ipynb` demonstrates both algorithms on the Iris dataset, including:
-
-- Data exploration and visualization
-- Train/test splitting
-- Model training and evaluation
-- Confusion matrix for KNN
-- Regression line visualization for Linear Regression
-- Analysis of how K affects KNN accuracy
+10 tests covering accuracy, prediction shape, edge cases, and error handling.
 
 ---
 
@@ -113,5 +148,6 @@ The notebook `notebooks/mlpackage_demo.ipynb` demonstrates both algorithms on th
 - `numpy`
 - `pandas`
 - `matplotlib`
-- `scikit-learn` (dataset loading and train/test split only)
+- `scikit-learn` (dataset loading, preprocessing, and metrics)
+- `scipy` (hierarchical clustering)
 - `pytest`
