@@ -6,7 +6,7 @@
 
 ## Overview
 
-This repository contains a custom Python machine learning package and a comprehensive set of Jupyter notebooks developed for CMOR 438. The package implements fundamental supervised learning algorithms from scratch using only NumPy and Pandas — no scikit-learn models — to build a deep understanding of the underlying mathematics. The notebooks cover the full range of algorithms taught in the course, from classical ML to neural networks, each with data exploration, preprocessing, modeling, evaluation, and visualizations.
+This repository contains a custom Python machine learning package and a comprehensive set of Jupyter notebooks developed for CMOR 438. The package implements fundamental supervised learning algorithms from scratch. The notebooks cover the full range of algorithms taught in the course, from classical ML to neural networks, each with data exploration, preprocessing, modeling, evaluation, and visualizations.
 
 ---
 

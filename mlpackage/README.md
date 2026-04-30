@@ -1,8 +1,8 @@
 # mlpackage
 
-A from-scratch machine learning library built for CMOR 438 / INDE 577 at Rice University.
+A from-scratch machine learning library built for CMOR 438 at Rice University.
 
-All core algorithms are implemented using only **NumPy** and **Pandas** — no scikit-learn models are used internally. The goal is to build a deep understanding of how machine learning algorithms work by implementing them from first principles.
+All core algorithms are implemented using only **NumPy** and **Pandas**. The goal is to build a deep understanding of how machine learning algorithms work.
 
 ---
 
