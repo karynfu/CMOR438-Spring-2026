@@ -6,7 +6,7 @@
 
 ## Overview
 
-This repository contains a custom Python machine learning package and a comprehensive set of Jupyter notebooks developed for CMOR 438 (Spring 2026). The package implements fundamental supervised learning algorithms from scratch using only NumPy and Pandas — no scikit-learn models — to build a deep understanding of the underlying mathematics. The notebooks cover the full range of algorithms taught in the course, from classical ML to neural networks, each with data exploration, preprocessing, modeling, evaluation, and visualizations.
+This repository contains a custom Python machine learning package and a comprehensive set of Jupyter notebooks developed for CMOR 438. The package implements fundamental supervised learning algorithms from scratch using only NumPy and Pandas — no scikit-learn models — to build a deep understanding of the underlying mathematics. The notebooks cover the full range of algorithms taught in the course, from classical ML to neural networks, each with data exploration, preprocessing, modeling, evaluation, and visualizations.
 
 ---
 
@@ -15,15 +15,20 @@ This repository contains a custom Python machine learning package and a comprehe
 ```
 CMOR438-Spring-2026/
 ├── mlpackage/                              # Custom ML package
-│   ├── __init__.py
+│   ├── __init__.py                         # Public API
+│   ├── metrics.py                          # Regression and classification metrics
+│   ├── preprocessing.py                    # Data splitting and feature scaling
 │   ├── supervised_learning/
 │   │   ├── __init__.py
 │   │   ├── knn.py                          # K-Nearest Neighbors classifier
 │   │   └── linear_regression.py            # Linear Regression via Normal Equation
-│   └── tests/
-│       ├── __init__.py
-│       ├── test_knn.py                     # 4 unit tests for KNN
-│       └── test_linear_regression.py       # 6 unit tests for Linear Regression
+│   ├── tests/
+│   │   ├── __init__.py
+│   │   ├── test_knn.py                     # 4 unit tests for KNN
+│   │   ├── test_linear_regression.py       # 6 unit tests for Linear Regression
+│   │   ├── test_metrics.py                 # 16 unit tests for metrics
+│   │   └── test_preprocessing.py           # 16 unit tests for preprocessing
+│   └── README.md                           # Package-level documentation
 ├── notebooks/
 │   ├── mlpackage_demo.ipynb                # End-to-end demo of the custom package
 │   ├── Supervised Learning/
@@ -39,6 +44,7 @@ CMOR438-Spring-2026/
 │       ├── kmeans.ipynb
 │       ├── pca.ipynb
 │       └── hierarchical_clustering.ipynb
+├── pyproject.toml                          # Package build config (pip install -e .)
 ├── pytest.ini
 ├── requirements.txt
 └── README.md
@@ -48,9 +54,11 @@ CMOR438-Spring-2026/
 
 ## ML Package
 
-The `mlpackage` library provides from-scratch implementations of two supervised learning algorithms using only `numpy` and `pandas`.
+The `mlpackage` library provides from-scratch implementations of supervised learning algorithms, preprocessing utilities, and evaluation metrics using only `numpy` and `pandas`. See [`mlpackage/README.md`](mlpackage/README.md) for the full API reference.
 
-### K-Nearest Neighbors (`mlpackage.supervised_learning.knn`)
+### Supervised Learning
+
+#### K-Nearest Neighbors (`mlpackage.supervised_learning.knn`)
 
 A non-parametric, lazy learning classifier. To predict a label, it finds the K nearest training points by Euclidean distance and returns the majority class vote.
 
@@ -62,7 +70,7 @@ A non-parametric, lazy learning classifier. To predict a label, it finds the K n
 | `confusion_matrix(X, y)` | Returns a labeled DataFrame confusion matrix |
 | `draw_decision_boundary(X, y)` | Plots decision boundary for 2D data |
 
-### Linear Regression (`mlpackage.supervised_learning.linear_regression`)
+#### Linear Regression (`mlpackage.supervised_learning.linear_regression`)
 
 A regression algorithm that finds optimal parameters using the **Normal Equation** — a closed-form solution requiring no iterative optimization:
 
@@ -76,6 +84,33 @@ The pseudoinverse $(X^\top X)^+$ is used for numerical stability on collinear fe
 | `predict(X)` | Returns predicted continuous values |
 | `rmse(X, y)` | Returns Root Mean Squared Error |
 | `R_squared(X, y)` | Returns coefficient of determination (R²) |
+
+### Preprocessing (`mlpackage.preprocessing`)
+
+Common data preparation utilities with a consistent `fit` / `transform` / `fit_transform` interface.
+
+| Class / Function | Description |
+|------------------|-------------|
+| `train_test_split(X, y, ...)` | Shuffle and split into train/test subsets |
+| `StandardScaler` | Zero-mean, unit-variance normalization |
+| `MinMaxScaler` | Scale features to a fixed [min, max] range |
+| `LabelEncoder` | Encode categorical labels as integers |
+
+### Metrics (`mlpackage.metrics`)
+
+Standalone evaluation functions for regression and classification.
+
+| Function | Description |
+|----------|-------------|
+| `mean_squared_error(y_true, y_pred)` | MSE |
+| `root_mean_squared_error(y_true, y_pred)` | RMSE |
+| `mean_absolute_error(y_true, y_pred)` | MAE |
+| `r_squared(y_true, y_pred)` | Coefficient of determination (R²) |
+| `accuracy(y_true, y_pred)` | Classification accuracy |
+| `confusion_matrix(y_true, y_pred)` | Multiclass confusion matrix (ndarray) |
+| `precision(y_true, y_pred)` | Binary precision |
+| `recall(y_true, y_pred)` | Binary recall / sensitivity |
+| `f1_score(y_true, y_pred)` | Binary F1 score |
 
 ---
 
@@ -131,7 +166,7 @@ All datasets are loaded directly from `sklearn.datasets` — no external files n
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.9+
 - pip
 
 ### Installation
@@ -141,37 +176,49 @@ All datasets are loaded directly from `sklearn.datasets` — no external files n
 git clone https://github.com/karynfu/CMOR438-Spring-2026.git
 cd CMOR438-Spring-2026
 
-# Install dependencies
+# Install the package in editable mode (recommended)
+pip install -e .
+
+# Or install dependencies only
 pip install -r requirements.txt
 ```
 
 ### Using the Package
 
 ```python
-from mlpackage.supervised_learning.knn import KNN
-from mlpackage.supervised_learning.linear_regression import LinearRegression
+from mlpackage import KNN, LinearRegression
+from mlpackage.preprocessing import StandardScaler, train_test_split
+from mlpackage import metrics
 from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
 
-# Load data
+# Load and split data
 X, y = load_iris(return_X_y=True)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Scale features (important for distance-based models)
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s  = scaler.transform(X_test)
+
 # KNN classification
-knn = KNN(k=3)
-knn.fit(X_train, y_train)
-print(f"KNN Accuracy: {knn.accuracy(X_test, y_test):.4f}")
-print(knn.confusion_matrix(X_test, y_test))
+knn = KNN(k=5)
+knn.fit(X_train_s, y_train)
+y_pred = knn.predict(X_test_s)
+print(f"KNN Accuracy: {metrics.accuracy(y_test, y_pred):.4f}")
+print(metrics.confusion_matrix(y_test, y_pred))
 
 # Linear Regression
+from mlpackage.supervised_learning import LinearRegression
 from sklearn.datasets import load_diabetes
+import numpy as np
+
 X_reg, y_reg = load_diabetes(return_X_y=True)
 X_tr, X_te, y_tr, y_te = train_test_split(X_reg, y_reg, test_size=0.2, random_state=42)
 
 lr = LinearRegression()
 lr.fit(X_tr, y_tr)
-print(f"R²:   {lr.R_squared(X_te, y_te):.4f}")
-print(f"RMSE: {lr.rmse(X_te, y_te):.4f}")
+print(f"R²:   {metrics.r_squared(y_te, lr.predict(X_te)):.4f}")
+print(f"RMSE: {metrics.root_mean_squared_error(y_te, lr.predict(X_te)):.4f}")
 ```
 
 ### Running the Notebooks
@@ -188,7 +235,7 @@ Navigate to the `notebooks/` folder and open any notebook. Run all cells with **
 pytest -v
 ```
 
-10 tests covering prediction accuracy, output shape, edge cases, and error handling.
+42 tests across 4 test files covering prediction accuracy, output shapes, metric correctness, scaler invertibility, and error handling.
 
 ---
 
