@@ -13,8 +13,6 @@ The implementation follows the standard KNN procedure:
 2. For each query point, compute Euclidean distances to all training samples.
 3. Select the k nearest neighbors.
 4. Predict the label that appears most frequently among them.
-
-This implementation is intended for educational and demonstration purposes.
 """
 
 import numpy as np
